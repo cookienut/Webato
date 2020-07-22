@@ -1,0 +1,28 @@
+{
+    "caliberations": {
+        "instagram": {
+            "linux": [
+                686,
+                700
+            ],
+            "windows": [
+                702,
+                660
+            ]
+        },
+        "whatsapp": {
+            "linux": [
+                551,
+                740
+            ],
+            "windows": [
+                586,
+                691
+            ]
+        }
+    },
+    "filenames": {
+        "instagram": "instagram-messages.txt",
+        "whatsapp": "whatsapp-messages.txt"
+    }
+}
