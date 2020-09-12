@@ -27,32 +27,36 @@ from .spammer import Spammer
     '-a', '--app', default='', help='Name of webapp to use', required=False
 )
 @click.option(
-    '-t', '--test-mode', default=False, help='Calibration mode flag', is_flag=True
+    '-t', '--test-mode', default=False, help='Calibration mode flag',
+    is_flag=True
 )
 @click.option(
-    '-c', '--calibrate', default=False, help='Flag for calibration mode', is_flag=True
+    '-c', '--calibrate', default=False, help='Flag for calibration mode',
+    is_flag=True
 )
 def main(calibrate, test_mode, app, mfile):
     """
     Runs ``Spammer`` as CLI command.
 
-    Accepts optional arguments ``--app`` and ``--file`` to specify
+    Accepts optional arguments ``--app`` [-a] and ``--mfile`` [-f] to specify
     webapp and the message file respectively. If not specifed, uses default
-    values. For example:
+    values. Additionally accepts ``--calibrate`` [-c] and ``--test-mode`` [-t]
+    flags to use calibration mode or testing calibrations respectively.
+    For example:
 
-    Running spammer:
-    >> py spammer                           # Default webapp and msg file
-    >> py spammer -a whatsapp               # Webapp and it's own msg file
-    >> py spammer -a whatsapp -f msg.txt    # Webapp and specific msg file
+    Running spammer:                                                            
+    >> py spammer                           # Default webapp and its msg file.
+    >> py spammer -a whatsapp               # Specific app and its msg file.
+    >> py spammer -a whatsapp -f msg.txt    # Specific Webapp & any msg file.
 
-    Calibrating Web Apps:
-    >> py spammer -c                         # Default webapp and msg file
-    >> py spammer -c -a whatsapp             # Calibrate app, old msg file
-    >> py spammer -c -a whatsapp -f msg.txt  # Webapp and set new msg file
+    Calibrating Web Apps:                                                       
+    >> py spammer -c                        # Default webapp and message file.
+    >> py spammer -c -a whatsapp            # Calibrate app, old message file.
+    >> py spammer -c -a whatsapp -f msg.txt # Webapp and set new message file.
 
-    Testing Calibration:
-    >> py spammer -t                         # Test default webapp
-    >> py spammer -t -a whatsapp             # Test specific webapp
+    Testing Calibration:                                                    
+    >> py spammer -t                        # Test default webapp calibration.
+    >> py spammer -t -a whatsapp            # Test any webapp calibration.
     """
 
     if test_mode:
