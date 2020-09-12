@@ -1,10 +1,12 @@
 """
 Author: dev.sagarbhat@gmail.com (Sagar Bhat)
+Github: @cookienut
 
 This file contains the Calibration class and its methods to caliberate the
 on-screen position of text box in web applications, on different platforms.
 """
 
+import os
 import sys
 import json
 import time
@@ -25,7 +27,7 @@ class Calibration():
     def __init__(self, app_name=None, msg_file=None):
         self.base_path = Path(__file__).resolve().parent
         self.config = json.load(
-            open(Path.joinpath(self.base_path, 'config.json')))
+            open(Path.joinpath(self.base_path, '..','config.json')))
         self.app_name = app_name or settings.DEFAULT_APP
         self.msg_file = msg_file or self.config["filenames"][self.app_name]
         self.platform = self.get_system_platform()
@@ -51,7 +53,7 @@ class Calibration():
         caliberations of the default web-app.
         """
         app_name = app_name or self.app_name
-        config = self.config["caliberations"]
+        config = self.config["calibrations"]
 
         if app_name not in config:
             click.echo(
@@ -70,7 +72,7 @@ class Calibration():
         Updates callibration config file with position (width and height)
         of text box on screen, for the calibrated webApp.
         """
-        __config = self.config["caliberations"]
+        __config = self.config["calibrations"]
         __config[self.app_name] = __config.get(self.app_name) or {}
         __config[self.app_name][self.platform] = [self.width, self.height]
 
@@ -80,56 +82,63 @@ class Calibration():
         with open(Path.joinpath(self.base_path, 'config.json'), 'w') as config:
             json.dump(self.config, config, indent=4, sort_keys=True)
 
-    def test_caliberations(self, width_height=None, show_switch_prompt=False):
+    def test_calibration(self, width_height=None, show_switch_prompt=False):
         """
-        A method to non invasively test whether the caliberations are correct
+        A method to non invasively test whether the app calibrations are correct
         on the current platform and if it is safe to use ``spammer`` with these
-        caliberations.
+        calibrations or not.
 
         Usage: The mouse cursor hovers over the area which is expected to be a
-        textbox for inputing text. User needs to validate the caliberations by
-        accepting them OR opt to abort and recaliberate later.
+        textbox for inputing text. User needs to validate the calibrations and
+        accept them for saving OR user may opt to abort and recalibrate later.
         """
+        # Check if the message file exists for the web-app
+        file_ = Path.joinpath(self.base_path, '..', 'messages', self.msg_file)
+        assert os.path.exists(file_) and os.path.isfile(file_), (
+            f'Message file {self.msg_file}, does not exist.')
+
+        # Check if text-box is calibrated properly
         width, height = width_height or self.get_caliberation_config()
 
         prompt_message = (
-            'Alright, %sOnce you press \'OK\' you should see the mouse '
-            'cursor automatically hover over the textbox as caliberated.')
-
+            'Hello, %sOnce you press \'OK\' the mouse cursor will automatically '
+            'hover over the screen where a textbox is expected to be.')
         if show_switch_prompt:
             prompt_message = prompt_message % (
-            f'before you press \'OK\', switch to {self.app_name.title()}...\n')
+            f'before you press \'OK\', switch to {self.app_name.title()} and '
+             'make sure a contact is selected.\n\n')
         else:
             prompt_message = prompt_message % ('')
-
         gui.alert(prompt_message)
-        time.sleep(1)
 
+        time.sleep(1)
+        # Hover over expected area
         for _ in range(4):
             gui.moveTo(width + 10, height, 0.3)
             gui.moveTo(width, height, 0.3)
 
         accept = gui.confirm(
-            'Press \'OK\' to proceed with these caliberations, or press '
-            '\'Cancel\' to exit.')
-        assert 'Cancel' not in accept, 'Caliberation Test Failed !'
-
+            'Press \'OK\' if the cursor was correctly positioned over textbox, '
+            'or press \'Cancel\' to exit')
+        assert 'Cancel' not in accept, (
+            'Caliberation Test Failed ! Please re-calibrate the web app.')
         click.echo('Caliberation test complete.')
 
-    def caliberate_app(self):
+    def calibrate(self):
         """
         Method to help caliberte position of textbox on user's machine based
         on provided user inputs.
         """
         start_caliberation = gui.confirm(
-            f'Starting caliberation for \'{self.app_name.title()}\'... '
-            f'Press \'OK\' to continue.')
+            f'Starting calibration for \'{self.app_name.title()}\' !!! '
+            f'\n\nPress \'OK\' to continue or \'Cancel\' to abort.')
         assert 'Cancel' not in start_caliberation, 'Caliberation Aborted !'
 
         gui.alert(
             f'Please switch to the \'{self.app_name.title()}\' app and select '
-            'a contact. Move the mouse cursor on top of the text-box and then '
-            'hold it still for a few seconds, until confirmation.')
+            'a contact after pressing \'Ok\'. Move the mouse cursor over the '
+            'text-box and then hold it still for a few seconds, until '
+            'confirmation.')
 
         click.echo(
         f'\nSleeping for {settings.CALIBERATION_SLEEP_SECS} seconds for '
@@ -137,51 +146,11 @@ class Calibration():
         time.sleep(settings.CALIBERATION_SLEEP_SECS)
 
         self.width, self.height = gui.position()
-        self.test_caliberations((self.width, self.height))
+        self.test_calibration((self.width, self.height))
 
-        click.echo('\nCaliberation complete ! Updating config file... ')
+        click.echo('\nUpdating config file... ')
         self.update_caliberation_config()
-        print(f'Config file updated, location: `config.json` under '
-              f'`{self.base_path}`')
-
-
-@click.command()
-@click.option('-t', '--test-mode', help='Flag to test caliberation',
-    is_flag=True)
-@click.option('-f', '--file', default='', help='Provide msg file name to set',
-    required=False)
-@click.option('-a', '--app', default='', help='Provide webapp to caliberate',
-    required=False)
-def cli_caliberate(app, file, test_mode):
-    """
-    Caliberate or test caliberations of web applications and set their
-    corresponding message filenames in ``config.json`` through CLI.
-
-    The purpose of these caliberations is to identify the on-screen position of
-    textbox in a webapp to be able to send messages through GUI automation.
-
-    Accepts optional parameters ``--app`` and ``--file`` to specify the webApp
-    to caliberate and filename to set against this app in ``config.json``. For
-    example:
-
-    >> python caliberate.py -t               # Test default app caliberation
-    >> python caliberate.py -t -a abc        # Test app caliberation for abc
-    >> python caliberate.py -a whatsapp      # Set caliberation for whatsapp
-    >> python caliberate.py -a abc -f m.txt  # Set webapp caliberation and msg
-    .                                        # file for some webapp abc
-    """
-
-    try:
-        cb = Calibration(app, file)
-        if test_mode:
-            click.echo(f'Testing caliberation for {cb.app_name}...')
-            cb.test_caliberations(show_switch_prompt=True)
-        else:
-            cb.caliberate_app()
-
-    except Exception as ex:
-        click.echo(f'Error: {ex}')
-
-
-if __name__ == '__main__':
-    cli_caliberate()
+        conf_file_path = Path(__file__).resolve().parent.parent
+        conf_file_path = Path.joinpath(conf_file_path, 'config.json')
+        click.echo('Caliberation complete !')
+        click.echo(f'Config file location: {conf_file_path}')

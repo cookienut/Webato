@@ -1,32 +1,19 @@
-*******
-Spammer
-*******
+***********************************
+Spammer: A PyAutoGUI Sample Project
+***********************************
 
-Spammer is a fun cross-platform message spamming suite written in python using PyAutoGUI module. It provides CLI options to leverage GUI automation in order to send text messages to your friends, from a message file, over any web application.
+A simple automation suite written in python 3 using PyAutoGUI library, for sending automated text messages over any web application. The aim of the project is to learn the basics of PyAutoGUI and create a simple yet fun project out of it.
 
-``Spammer`` comes with a bunch of features. It provides CLI options for caliberating any web application for sending messages and an interactive platform in the form of confirmation and alert boxes. Besides, these caliberations are saved for future, so it's a one time affair. It leverages the features of ``PyAutoGUI`` to automate mouse clicks and key presses on keyboard in order to type in texts and send them over any web app.
+``Spammer`` provides CLI options (using basics of ``click``) to leverage GUI automation to send text messages over any web application, from a message file. Apart from sending automated text messages, Spammer also provides CLI options to configure or calibrate a new web-app as well as to test these calibrations at any point of time.
 
 Installation
 ------------
 
-* For installation , create a virtual environment or directly use:
+* For installation , create a virtual environment first, and then run :
 .. code-block:: text
 
     $ pip3 install -r requirements.txt
 
-The ``PyAutoGUI`` module may have a few additional dependencies based on the platform it's being used on.
-
-* For `Windows` there are no additional dependencies.
-* For `Mac`, first install ``pyobjc-core`` and ``pyobjc`` modules:
-.. code-block:: text
-
-    $ pip3 install pyobjc-core
-    $ pip3 install pyobjc
-
-* For `Linux`, the only dependency is `python3-xlib` module.
-.. code-block:: text
-
-    $ pip3 install python3-xlib
 
 Settings
 --------
@@ -35,47 +22,47 @@ The parameters in ``settings.py`` are configurable. For example -
 
 .. code-block:: text
 
-    DEFAULT_APP = "whatsapp"        # Spammer uses caliberations of this default app, if no app is specified when Spammer is run
-    INITIAL_SLEEP_SECS = 10         # Seconds given to switch to web app from terminal, after this spamming will start
-    CALIBERATION_SLEEP_SECS = 10    # Seconds given to switch to web app from terminal, after this caliberation will start
+    DEFAULT_APP = "whatsapp"        # If no app name is specified while running Spammer, it runs for this default app
+    INITIAL_SLEEP_SECS = 10         # Seconds given to switch to web app from terminal, after this spamming starts
+    CALIBERATION_SLEEP_SECS = 10    # Seconds given to switch to web app from terminal, after this calibration starts
     LINE_BY_LINE_MESSGAGING = True  # Send each line from the message file as separate text, for more annoyance
 
 Fail-safe
 ---------
 
-Since the mouse and keyboard controls are automated here, it may prove chaotic if something goes wrong.
+Since both the mouse and keyboard are taken over, losing control may prove problematic, if configred improperly.
 To avoid such a situation we rely of ``Fail-Safe feature of PyAutoGUI``. To terminate the Spammer execution at any point of time, move the ``mouse cursor to any of the four corners of the screen``. This will trigger the fail-safe feature and execution will stop immediately.
 
 Usage
 -----
 
-Follow the below steps to use Spammer:
+* Log in to any web application and select a contact. Whatsapp and Instagram web-apps are pre-configured, you may add more, if needed.
 
-* Log in to any web application and select a contact to sent automated messages to.
-* Some web apps have been pre-caliberated. Each web app uses a message file which can be found under ``messages`` folder (check ``config.json`` for more details). To know more about how to caliberate apps or test caliberations use:
+* To run Spammer, use either of the following:
 .. code-block:: python
 
-    $ python spammer/caliberate.py --help           # For more usage details, if needed
-
-* Testing caliberations: Before you use Spammer, make sure you've tested caliberations for your webapp on your setup once:
-.. code-block:: python
-
-    $ python spammer/caliberate.py -t -a whatsapp   # whatsapp should be replaced with app that you're testing
-    
-* Caliberating web apps: If you are trying to caliberate a new web app or the existing caliberations are off, use:
-.. code-block:: python
-
-    $ python spammer/caliberate.py -a myApp -f messages.txt   # It'll caliberate myApp & use messages.txt to read messages
-
-* Make sure the message file for the web-app exists under ``messages`` folder before you start the Spammer. If not, create it. The messages will be read from this file.
-
-* To run Spammer, use:
-.. code-block:: python
-
-    $ python spammer                    # Starts spammer for DEFAULT_APP set in settings.py
+    $ py spammer                             # Starts Spammer for DEFAULT_APP set in settings.py
     or
-    $ python spammer -a instagram       # Starts spammer for specific app i.e. instagram
+    $ py spammer -a instagram                # Starts Spammer for specific app i.e. instagram
     or
-    $ python spammer --help             # For more options or help
+    $ py spammer -a instagram -f msg.txt     # Starts Spammer for specific app and uses specified msg file
 
-* The above command will initiate the Spammer. Switch to the web app, don't move mouse cursor and after a few seconds Spammer will take over. Enjoy and don't forget to have fun !
+
+* Calibrating web apps: If you are calibering a new web app or the existing calibrations are incorrect, use:
+.. code-block:: python
+
+    $ py spammer -c -a whatsapp -f msg.txt   # It'll caliberate whatsapp & set msg.txt as the message file
+
+** ``NOTE - Make sure the specified message file already exists under 'messages' folder before you start the Spammer. If not, create it. The messages will be read from this file.``
+
+* Testing calibration: Before you use Spammer, make sure you test calibrations for a web-app on your setup atleast once, just to be sure:
+.. code-block:: python
+
+    $ py spammer -t -a whatsapp   # whatsapp should be replaced with app that you're testing
+
+* For more help, use:
+.. code-block:: python
+
+    $ py spammer --help           # For more usage details, if needed
+
+* There you have it. Automate, learn and don't forget to have fun !

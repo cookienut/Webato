@@ -1,5 +1,6 @@
 """
 Author: dev.sagarbhat@gmail.com (Sagar Bhat)
+Github: @cookienut
 
 This file contains the Reader class and methods to read as well as parsed the
 contents of message files as needed.
@@ -19,7 +20,7 @@ class FileReader():
 
     def __init__(self, file_name):
         __base_path = Path(__file__).resolve().parent
-        self.file_path = Path.joinpath(__base_path, 'messages', file_name)
+        self.file_path = Path.joinpath(__base_path, '..', 'messages', file_name)
         self.line_by_line_messaging = settings.LINE_BY_LINE_MESSGAGING
 
     def read_file(self, file_path=None):

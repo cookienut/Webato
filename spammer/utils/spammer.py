@@ -1,8 +1,9 @@
 """
 Author: dev.sagarbhat@gmail.com (Sagar Bhat)
+Github: @cookienut
 
-This file contains the Spammer class and its methods to initiate sending or
-spamming text messages from a message file over any webapp.
+This file contains the Spammer class and its methods to initiate sending
+text messages from a message file over any web application.
 """
 
 import time
@@ -11,8 +12,8 @@ import click
 import pyautogui as gui
 
 import settings
-from calibrate import Calibration
-from reader import FileReader
+from .calibrate import Calibration
+from .reader import FileReader
 
 
 class Spammer():
@@ -21,7 +22,7 @@ class Spammer():
     """
 
     def __init__(self, app_name=None, msg_file=None):
-        # WebApp
+        # WebApp name
         self.app_name = app_name or settings.DEFAULT_APP
         # Calibration details for webApp
         clb = Calibration()
@@ -43,12 +44,12 @@ class Spammer():
         gui.typewrite(text)
         gui.typewrite(['enter'])
 
-    def initiate_spamming(self):
+    def send_messages(self):
         """
-        Initiates the GUI automated spam sequence and sends all the lines of
-        text held by the list ``self.messages``, as text messages over webapp.
+        Automates GUI to type-in and send all the lines of text messages saved
+        as a list in ``self.messages``, over the selected webapp.
         """
-        click.echo(f'\nInitiating spam sequence on {self.app_name}...\n')
+        click.echo(f'\nSending messages...\n')
         for text in self.messages:
             click.echo(text)
             time.sleep(0.01)

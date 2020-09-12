@@ -1,5 +1,5 @@
 {
-    "caliberations": {
+    "calibrations": {
         "instagram": {
             "linux": [
                 686,
@@ -22,7 +22,7 @@
         }
     },
     "filenames": {
-        "instagram": "instagram-messages.txt",
-        "whatsapp": "whatsapp-messages.txt"
+        "instagram": "instagram.txt",
+        "whatsapp": "whatsapp.txt"
     }
 }
